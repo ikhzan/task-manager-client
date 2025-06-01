@@ -1,10 +1,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:task_manager_client/models/task_model.dart';
+import 'package:task_manager_client/screens/task_detail_screen.dart';
 import 'package:task_manager_client/services/task_service.dart';
 import 'package:task_manager_client/widgets/task_card.dart';
 
 class TaskList extends StatefulWidget{
+  final List<Task> tasks;
+
+  const TaskList({super.key, required this.tasks});
+
   @override
   _TaskListState createState() => _TaskListState();
 
@@ -29,32 +34,25 @@ class _TaskListState extends State<TaskList> {
     });
   }
 
+  void refreshTasks() => fetchTasks(); // Refresh after deletion
+
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? Center(child: CircularProgressIndicator())
-        : ListView.builder(
-            itemCount: tasks.length,
-            itemBuilder: (context, index) {
-              final task = tasks[index];
-              return Dismissible(
-                key: Key(task.id),
-                direction: DismissDirection.endToStart,
-                onDismissed: (direction) {
-                  _taskService.deleteTask(task.id);
-                  setState(() {
-                    tasks.removeAt(index);
-                  });
-                },
-                background: Container(
-                  color: Colors.red,
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Icon(Icons.delete, color: Colors.white),
-                ),
-                child: TaskCard(task: task),
-              );
-            },
-          );
+    return ListView.builder(
+      itemCount: tasks.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TaskDetailScreen(task: tasks[index])),
+          ),
+          child: TaskCard(
+            task: tasks[index],
+            onDelete: () => refreshTasks(),
+          ),
+        );
+      },
+    );
+
   }
 }

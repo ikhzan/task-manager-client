@@ -1,22 +1,41 @@
-// import 'package:dio/dio.dart';
-// import 'package:task_manager_client/core/config.dart';
 import 'package:task_manager_client/core/config.dart';
 import 'package:task_manager_client/core/local_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-
 class AuthService {
+  Future<bool> register(String username, String password) async {
+    try{
+      final response = await http.post(
+        Uri.parse("${Config.authEndpoint}/register"),
+        headers: {"Content-Type":"application/json"},
+        body: jsonEncode({"username":username, "password":password})
+      );
+      if(response.statusCode == 201 || response.statusCode == 200){
+        return true;
+      }
+    }catch(e){
+      print("Error $e");
+      return false;
+    }
+
+    return false;
+  }
 
   Future<bool> login(String username, String password) async {
     try{
-    final response = await http.post(
-      Uri.parse("${Config.authEndpoint}login"),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"username": username, "password": password}),
-    );
+      final response = await http.post(
+        Uri.parse("${Config.authEndpoint}/login"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"username": username, "password": password}),
+      );
 
       if (response.statusCode == 201) {
+        final userData = jsonDecode(response.body);
+  
+        await LocalStorage.setUserId(userData['userId']);
+        await LocalStorage.setToken(userData['accessToken']);
+
         await LocalStorage.setUsername(username);
         await LocalStorage.setPassword(password);
         return true;

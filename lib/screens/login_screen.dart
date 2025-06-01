@@ -23,9 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = false);
 
     if (success) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+      Navigator.pushReplacementNamed(context, '/tasks'); // Redirect to Task List
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login failed! Check credentials.")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login failed!")));
     }
   }
 

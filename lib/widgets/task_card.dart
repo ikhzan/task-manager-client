@@ -1,11 +1,19 @@
 
 import 'package:flutter/material.dart';
+import 'package:task_manager_client/services/task_service.dart';
 import '../models/task_model.dart';
 
 class TaskCard extends StatelessWidget {
   final Task task;
+  final Function onDelete;
+  final TaskService _taskService = TaskService();
 
-  const TaskCard({super.key, required this.task});
+  TaskCard({super.key, required this.task, required this.onDelete});
+
+  void _deleteTask() async{
+    await _taskService.deleteTask(task.id);
+    onDelete();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +21,8 @@ class TaskCard extends StatelessWidget {
       child: ListTile(
         title: Text(task.title),
         subtitle: Text(task.description),
-        trailing: Icon(task.completed ? Icons.check_circle : Icons.cancel),
+        leading: Icon(task.completed ? Icons.check_circle: Icons.radio_button_unchecked_outlined),
+        trailing: IconButton(onPressed: _deleteTask, icon: Icon(Icons.delete, color: Colors.red,)),
       ),
     );
   }

@@ -1,6 +1,16 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
+  static Future<void> setUserId(String userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("user_id", userId);
+  }
+
+  static Future<String?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("user_id");
+  }
+
   static Future<void> setToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString("auth_token", token);
