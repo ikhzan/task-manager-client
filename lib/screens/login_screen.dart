@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:task_manager_client/screens/home_screen.dart';
+import 'package:task_manager_client/core/local_storage.dart';
+import 'package:task_manager_client/screens/main_screen.dart';
 import 'package:task_manager_client/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget{
@@ -23,7 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = false);
 
     if (success) {
-      Navigator.pushReplacementNamed(context, '/tasks'); // Redirect to Task List
+      await LocalStorage.setUserLoggedIn(true);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MainScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login failed!")));
     }
@@ -32,19 +34,73 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Login")),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(controller: _usernameController, decoration: InputDecoration(labelText: "Username")),
-            SizedBox(height: 10),
-            TextField(controller: _passwordController, decoration: InputDecoration(labelText: "Password"), obscureText: true),
-            SizedBox(height: 20),
-            _isLoading ? CircularProgressIndicator() : ElevatedButton(onPressed: _handleLogin, child: Text("Login")),
-          ],
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.person, size: 80),
+              SizedBox(height: 20,),
+
+              Column(
+                    children: [
+                      TextField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          labelText: "Username", 
+                          prefixIcon: Icon(Icons.person),
+                          border: OutlineInputBorder(),
+                            filled: true,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10)
+                          ),
+                      ),
+                      SizedBox(height: 10,),
+                      TextField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          labelText: "Password", 
+                          prefixIcon: Icon(Icons.password),
+                          border: OutlineInputBorder()
+                        ),
+                        obscureText: true
+                      ),
+                      SizedBox(height: 20,),
+                      _isLoading ?
+                        CircularProgressIndicator()
+                        : ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+                          ),
+                          onPressed: _handleLogin, 
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Center(child: Text("Log In", style: TextStyle(fontSize: 18),),),
+                          )
+                        )
+                    ],
+                  ),
+            ],
+          ),
         ),
       ),
     );
+
+    // return Scaffold(
+    //   appBar: AppBar(title: Text("Login")),
+    //   body: Padding(
+    //     padding: EdgeInsets.all(16.0),
+    //     child: Column(
+    //       children: [
+    //         TextField(controller: _usernameController, decoration: InputDecoration(labelText: "Username")),
+    //         SizedBox(height: 10),
+    //         TextField(controller: _passwordController, decoration: InputDecoration(labelText: "Password"), obscureText: true),
+    //         SizedBox(height: 20),
+    //         _isLoading ? CircularProgressIndicator() : ElevatedButton(onPressed: _handleLogin, child: Text("Login")),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }

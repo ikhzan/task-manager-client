@@ -1,33 +1,55 @@
 import 'package:flutter/material.dart';
-// import 'package:task_manager_client/widgets/home_header.dart';
-// import 'package:task_manager_client/widgets/task_dashboard.dart';
-// import 'package:task_manager_client/widgets/task_list.dart';
+import 'package:task_manager_client/core/local_storage.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key}); 
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Future<bool> isLoggedIn() async{
+    return await LocalStorage.isUserLoggedIn();
+  }
+
+  void _logout() async{
+    await LocalStorage.setUserLoggedIn(false);
+    Navigator.popAndPushNamed(context, '/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Task Manager")),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Welcome to Task Manager", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
-          SizedBox(height: 16,),
-          // show features of the app
-          FeatureList(),
-
-          SizedBox(height: 20,),
-          ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, '/login'), 
-            child: Text('Login')
-          ),
-          SizedBox(height: 10,),
-          ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, '/register'), 
-            child: Text('Register')
-          )
-        ],
+      appBar: AppBar(title: Text("Task Manager"),),
+      body: FutureBuilder<bool>(
+        future: isLoggedIn(), 
+        builder: (context,snapshot){
+          if(!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
+          final bool loggedIn = snapshot.data!;
+          return Center(
+            child: Column(
+              children: [
+                Text("Welcome to Task Manager", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
+                SizedBox(height: 16,),
+                if(!loggedIn) ...[
+                  ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(context, '/login'), 
+                    child: Text("Login")
+                  ),
+                  SizedBox(height: 10,),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(context, '/register'), 
+                    child: Text("Register")
+                  ),
+                ],
+                if(loggedIn)
+                  ElevatedButton(
+                    onPressed: _logout, 
+                    child: Text("Logout")
+                  ),
+              ],
+            ),
+          );
+        }
       ),
     );
   }

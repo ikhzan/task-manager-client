@@ -18,7 +18,6 @@ class TaskList extends StatefulWidget{
 class _TaskListState extends State<TaskList> {
   final TaskService _taskService = TaskService();
   List<Task> tasks = [];
-  bool _isLoading = true;
 
   @override
   void initState() {
@@ -30,7 +29,6 @@ class _TaskListState extends State<TaskList> {
     final response = await _taskService.fetchTasks();
     setState(() {
       tasks = response;
-      _isLoading = false;
     });
   }
 

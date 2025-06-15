@@ -14,25 +14,7 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen>{
-  final TaskService _taskService = TaskService();
   List<Task> tasks = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchTasks();
-  }
-
-
-  void fetchTasks() async {
-    final response = await _taskService.fetchTasks();
-    setState(() {
-      tasks = response;
-      _isLoading = false;
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +24,25 @@ class _TaskListScreenState extends State<TaskListScreen>{
           onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
         ),
       ),
-      body: Column(
-        children: [
-          TaskHeader(totalTasks: tasks.length, completedTasks: tasks.where((task) => task.completed).length),
-          Expanded(child: TaskList(tasks: tasks)),
-        ],
-      ),
+      body: FutureBuilder<List<Task>> (
+            future: TaskService().fetchTasks(), 
+            builder: (context,snapshot){
+              if(snapshot.connectionState == ConnectionState.waiting){
+                return Center(child: CircularProgressIndicator(),);
+              }else if(snapshot.hasError){
+                return Center(child: Text("Error Loading Task"),);
+              }else{
+                final tasks = snapshot.data!;
+                return Column(
+                  children: [
+                    TaskHeader(totalTasks: tasks.length, completedTasks: tasks.where((t) => t.completed).length),
+                    Expanded(child: TaskList(tasks: tasks))
+                  ],
+                ); 
+              }
+            }
+          ),
+        
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.pushNamed(context, '/addTask'),
         child: Icon(Icons.add),

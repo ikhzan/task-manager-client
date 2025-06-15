@@ -4,26 +4,46 @@ import 'package:task_manager_client/routes/app_route.dart';
 import 'package:task_manager_client/screens/add_task_screen.dart';
 import 'package:task_manager_client/screens/home_screen.dart';
 import 'package:task_manager_client/screens/login_screen.dart';
+import 'package:task_manager_client/screens/main_screen.dart';
 import 'package:task_manager_client/screens/register_screen.dart';
 import 'package:task_manager_client/screens/task_list_screen.dart';
 
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  // final username = await LocalStorage.getUsername();
-
+  final bool isLoggedIn = await LocalStorage.isUserLoggedIn();
+  
   runApp(MaterialApp(
-    initialRoute: '/home',
+    debugShowCheckedModeBanner: false,
+    home: isLoggedIn ? MainScreen() : LoginScreen(),
     routes: {
       '/home': (context) => HomeScreen(),
-      '/login': (context) => LoginScreen(),
-      '/register': (context) => RegisterScreen(),
       '/tasks': (context) => TaskListScreen(),
-      '/addTask': (context) => AddTaskScreen()
+      '/addTask': (context) => AddTaskScreen(),
+      '/login': (context) => LoginScreen(), 
+      '/register': (context) => RegisterScreen(),
     },
   ));
 
 }
+
+class TaskManagerApp extends StatelessWidget {
+  final Widget startScreen;
+  const TaskManagerApp({super.key, required this.startScreen});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.blueAccent,
+        visualDensity: VisualDensity.adaptivePlatformDensity
+      ),
+      home: startScreen,
+    );
+  }
+}
+
 
 
 class MyApp extends StatelessWidget {
