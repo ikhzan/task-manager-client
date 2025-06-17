@@ -4,12 +4,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class AuthService {
-  Future<bool> register(String username, String password) async {
+  Future<bool> register(String username, String password, String email) async {
     try{
       final response = await http.post(
         Uri.parse("${Config.authEndpoint}/register"),
         headers: {"Content-Type":"application/json"},
-        body: jsonEncode({"username":username, "password":password})
+        body: jsonEncode({"username":username, "password":password, "email":email})
       );
       if(response.statusCode == 201 || response.statusCode == 200){
         return true;

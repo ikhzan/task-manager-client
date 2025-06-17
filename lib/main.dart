@@ -3,28 +3,34 @@ import 'package:task_manager_client/core/local_storage.dart';
 import 'package:task_manager_client/routes/app_route.dart';
 import 'package:task_manager_client/screens/add_task_screen.dart';
 import 'package:task_manager_client/screens/home_screen.dart';
+import 'package:task_manager_client/screens/kpi_screen.dart';
 import 'package:task_manager_client/screens/login_screen.dart';
 import 'package:task_manager_client/screens/main_screen.dart';
 import 'package:task_manager_client/screens/register_screen.dart';
 import 'package:task_manager_client/screens/task_list_screen.dart';
+import 'package:task_manager_client/screens/task_screen.dart';
+import 'package:task_manager_client/screens/team_screen.dart';
 
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final bool isLoggedIn = await LocalStorage.isUserLoggedIn();
-  
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: isLoggedIn ? MainScreen() : LoginScreen(),
-    routes: {
-      '/home': (context) => HomeScreen(),
-      '/tasks': (context) => TaskListScreen(),
-      '/addTask': (context) => AddTaskScreen(),
-      '/login': (context) => LoginScreen(), 
-      '/register': (context) => RegisterScreen(),
-    },
-  ));
 
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      // home: isLoggedIn ? MainScreen() : LoginScreen(),
+      home: MainScreen(),
+      routes: {
+        '/home': (context) => HomeScreen(),
+        '/tasks': (context) => TaskScreen(),
+        '/addTask': (context) => AddTaskScreen(),
+        '/teams': (context) => TeamScreen(),
+        '/login': (context) => LoginScreen(),
+        '/register': (context) => RegisterScreen(),
+         '/kpi': (context) => KpiScreen(),
+      },
+    ),
+  );
 }
 
 class TaskManagerApp extends StatelessWidget {
@@ -37,14 +43,12 @@ class TaskManagerApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.blueAccent,
-        visualDensity: VisualDensity.adaptivePlatformDensity
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: startScreen,
     );
   }
 }
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -58,8 +62,4 @@ class MyApp extends StatelessWidget {
       routes: AppRoute.routes,
     );
   }
-
 }
-
-
-

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager_client/core/local_storage.dart';
+import 'package:task_manager_client/widgets/basic_app_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -19,37 +20,55 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Task Manager"),),
-      body: FutureBuilder<bool>(
-        future: isLoggedIn(), 
-        builder: (context,snapshot){
-          if(!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
-          final bool loggedIn = snapshot.data!;
-          return Center(
-            child: Column(
-              children: [
-                Text("Welcome to Task Manager", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
-                SizedBox(height: 16,),
-                if(!loggedIn) ...[
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/login'), 
-                    child: Text("Login")
-                  ),
-                  SizedBox(height: 10,),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/register'), 
-                    child: Text("Register")
-                  ),
-                ],
-                if(loggedIn)
-                  ElevatedButton(
-                    onPressed: _logout, 
-                    child: Text("Logout")
-                  ),
-              ],
+      
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              color: Colors.deepPurpleAccent,
+              elevation: 10,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 20,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Your today's task almost here", style: TextStyle(color: Colors.white, fontSize: 16),),
+                        SizedBox(height: 30),
+                        ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 24,
+                            ),
+                          ),
+                          child: Text('View Task'),
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 20),
+                  ],
+                ),
+              ),
             ),
-          );
-        }
+            SizedBox(height: 20,),
+            Text("In Progress", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+            Row(children: [
+              
+            ],)
+          ],
+        ),
       ),
     );
   }

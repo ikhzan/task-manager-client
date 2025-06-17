@@ -22,9 +22,13 @@ class TaskService {
 
   Future<List<Task>> fetchTasks() async {
     try {
+      final token = await LocalStorage.getToken();
+      if (token == null) {
+        throw Exception("Authorization token is missing");
+      }
       final response = await http.get(
       Uri.parse(Config.tasksEndpoint),
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json", "Authorization": token},
       );
 
       if (response.statusCode == 200) {
