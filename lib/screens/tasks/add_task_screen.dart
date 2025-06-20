@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:task_manager_client/services/task_service.dart';
+import 'package:task_manager_client/widgets/basic_app_bar.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -36,12 +37,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add New Task'),),
+      appBar: BasicAppBar(title: Text('Add New Task'),),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(controller: _titleController, decoration: InputDecoration(labelText: "Task Title"),),
+            TextField(controller: _titleController, decoration: InputDecoration(labelText: "Task Title", border: InputBorder.none), ),
             SizedBox(height: 10,),
             TextField(controller: _descriptionController, decoration: InputDecoration(labelText: "Task Description"),),
             SizedBox(height: 10,),

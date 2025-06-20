@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:task_manager_client/models/task_model.dart';
-import 'package:task_manager_client/screens/task_detail_screen.dart';
+import 'package:task_manager_client/screens/tasks/task_detail_screen.dart';
 import 'package:task_manager_client/services/task_service.dart';
 import 'package:task_manager_client/widgets/task_card.dart';
 

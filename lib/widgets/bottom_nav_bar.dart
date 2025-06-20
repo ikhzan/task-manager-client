@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatefulWidget {
+  const BottomNavBar({super.key});
+
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
 }
@@ -10,8 +12,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
-    if (index == 0) Navigator.pushReplacementNamed(context, '/home');
-    else if (index == 1) Navigator.pushReplacementNamed(context, '/tasks');
+    if (index == 0) {
+      Navigator.pushReplacementNamed(context, '/home');
+    } else if (index == 1) Navigator.pushReplacementNamed(context, '/tasks');
     else if (index == 2) Navigator.pushNamed(context, '/addTask');
   }
 

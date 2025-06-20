@@ -1,74 +1,43 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_manager_client/commons/constants.dart';
+import 'package:task_manager_client/models/task_model.dart';
+import 'dart:convert';
 
 class LocalStorage {
+
   static Future<bool> isUserLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
-    final tokens = prefs.getString("auth_token");
+    final tokens = prefs.getString(Constants.accessToken);
     return tokens != null;
   }
 
-  static Future<void> setUserLoggedIn(bool loggedIn) async {
+  static Future<void> clearData() async {
     final prefs = await SharedPreferences.getInstance();
-    if(!loggedIn){
-      await prefs.remove("auth_token");
-    }
-  }
-
-  static Future<void> setUserId(String userId) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString("user_id", userId);
-  }
-
-  static Future<String?> getUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("user_id");
-  }
-
-  static Future<void> setToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString("auth_token", token);
-  }
-
-  static Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("auth_token");
+    await prefs.remove(Constants.accessToken);
   }
 
   static Future<void> clearToken() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove("auth_token");
+    await prefs.remove(Constants.accessToken);
+    await prefs.remove(Constants.username);
+    await prefs.remove(Constants.password);
+    await prefs.remove(Constants.fullName);
   }
 
-  static Future<void> setUsername(String username) async {
+  static Future<void> setData(String keyData, String valData) async{
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString("username", username);
+    await prefs.setString(keyData, valData);
   }
-
-  static Future<void> setPassword(String password) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString("password", password);
-  }
-
-  static Future<String?> getUsername() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("username");
-  }
-
-  static Future<String?> getPassword() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("password");
-  }
-
-  static Future<void> clearCredentials() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove("username");
-    await prefs.remove("password");
-  }
- static Future<String?> getAuthToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("auth_token");
-  }
-
   
+  static Future<String?> getData(String keyData) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(keyData);
+  }
+
+  static String encodeTasksToJson(List<Task> tasks) {
+    final List<Map<String, dynamic>> taskMaps = tasks.map((task) => task.toJson()).toList();
+    return jsonEncode(taskMaps);
+  }
+
 
 }

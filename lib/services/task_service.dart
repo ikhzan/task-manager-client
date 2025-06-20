@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:task_manager_client/commons/constants.dart';
 import 'package:task_manager_client/core/config.dart';
 import 'package:task_manager_client/core/local_storage.dart';
 import '../models/task_model.dart';
@@ -10,10 +11,13 @@ class TaskService {
   final Dio _dio = Dio(BaseOptions(baseUrl: Config.apiBaseUrl));
 
   Future<bool> updateTaskCompletion(String taskId, bool completed) async {
-    final token = await LocalStorage.getAuthToken();
+    final token = await LocalStorage.getData(Constants.accessToken);
     final response = await http.patch(
       Uri.parse("${Config.tasksEndpoint}/$taskId"),
-      headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"},
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      },
       body: jsonEncode({"completed": completed}),
     );
 
@@ -22,36 +26,40 @@ class TaskService {
 
   Future<List<Task>> fetchTasks() async {
     try {
-      final token = await LocalStorage.getToken();
+      final token = await LocalStorage.getData(Constants.accessToken);
+      final userId = await LocalStorage.getData(Constants.userId);
       if (token == null) {
         throw Exception("Authorization token is missing");
       }
+      if (userId == null) {
+        throw Exception("User id is missing");
+      }
+
       final response = await http.get(
-      Uri.parse(Config.tasksEndpoint),
+        Uri.parse("${Config.tasksEndpoint}/user/$userId"),
         headers: {"Content-Type": "application/json", "Authorization": token},
       );
-
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = jsonDecode(response.body);
-
-        if (jsonData.isEmpty) {
-          print("No tasks found"); // Debug log
-        }
-
         return jsonData.map<Task>((task) => Task.fromJson(task)).toList();
       } else {
         throw Exception("Failed to load tasks: ${response.statusCode}");
       }
-
     } catch (e) {
       print("Error fetching tasks: $e");
       return [];
     }
   }
 
-  Future<bool> createTask(String title, String description, String priority) async {
-    final token = await LocalStorage.getAuthToken();
-    final userId = await LocalStorage.getUserId(); // Retrieve stored user ID
+  Future<bool> createTask(
+    String title,
+    String description,
+    String priority,
+  ) async {
+    final token = await LocalStorage.getData(Constants.accessToken);
+    final userId = await LocalStorage.getData(
+      Constants.userId,
+    ); // Retrieve stored user ID
 
     if (userId == null) {
       print("Error: User ID is missing.");
@@ -60,37 +68,44 @@ class TaskService {
 
     final response = await http.post(
       Uri.parse(Config.tasksEndpoint),
-      headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"},
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      },
       body: jsonEncode({
-        "title": title, 
-        "description": description, 
+        "title": title,
+        "description": description,
         "priority": priority,
-        "user": userId
+        "user": userId,
       }),
     );
 
     return response.statusCode == 201;
   }
-  
 
   Future<void> addTask(Task task) async {
-    final token = await LocalStorage.getToken();
-    await _dio.post(Config.tasksEndpoint, data: task.toJson(), options: Options(headers: {"Authorization": "Bearer $token"}));
+    final token = await LocalStorage.getData(Constants.accessToken);
+    await _dio.post(
+      Config.tasksEndpoint,
+      data: task.toJson(),
+      options: Options(headers: {"Authorization": "Bearer $token"}),
+    );
   }
 
-   Future<bool> deleteTask(String taskId) async {
+  Future<bool> deleteTask(String taskId) async {
     try {
-      final token = await LocalStorage.getToken();
+      final token = await LocalStorage.getData(Constants.accessToken);
       final response = await http.delete(
-          Uri.parse("${Config.tasksEndpoint}/$taskId"),
-          headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"},
+        Uri.parse("${Config.tasksEndpoint}/$taskId"),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
       );
 
-      if(response.statusCode == 200 || response.statusCode == 201){
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return true;
       }
-
-     
 
       // await _dio.delete("${Config.tasksEndpoint}/$taskId",
       //     options: Options(headers: {"Authorization": "Bearer $token"}));
@@ -100,6 +115,4 @@ class TaskService {
 
     return false;
   }
-
-
 }
