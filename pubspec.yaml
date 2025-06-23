@@ -16,6 +16,7 @@ dependencies:
   flutter_riverpod: ^2.0.0
   shared_preferences: ^2.5.3
   http: ^1.4.0
+  introduction_screen: ^3.1.17
 
 dev_dependencies:
   flutter_test:
@@ -28,3 +29,13 @@ flutter:
 
   uses-material-design: true
 
+  assets:
+    - assets/images/profile.webp
+    - assets/images/bg.jpg
+    - assets/icons/github.png
+    - assets/icons/telegram.png
+    - assets/icons/twitter.png
+    - assets/icons/linkedin.png
+    - assets/intro/slide-1.png
+    - assets/intro/slide-2.png
+    - assets/intro/slide-3.png
