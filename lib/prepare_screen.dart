@@ -29,32 +29,77 @@ class PrepareScreen extends StatelessWidget {
           return MainScreen();
         } else {
           return Scaffold(
-            appBar: AppBar(title: Text('Task Manager'), leading: Icon(Icons.notification_important, color: Colors.lightBlue,),),
+            // appBar: AppBar(title: Text('Task Manager'), leading: Icon(Icons.notification_important, color: Colors.lightBlue,),),
             body: Padding(
               padding: const EdgeInsets.all(20),
               child: SizedBox(
-                
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      'Being in best performance make your employee happier, clients happier',style: TextStyle(fontSize: 17),
+                    SizedBox(
+                      child: Image(
+                        image: AssetImage('assets/intro/slide-1.png'),
+                      ),
                     ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Being in best performance make your employee happier, clients happier',
+                      style: TextStyle(fontSize: 17),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 10),
                     Text(
                       'Evaluate your performance by checking your task management',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
-                    SizedBox(child: Image(image: AssetImage('assets/intro/slide-1.png')),),
-                    SizedBox(height: 10,),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => LoginScreen(),
+                    Text(
+                      'Hello',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
                           ),
-                        );
-                      },
-                      child: Text('Login'),
+                          backgroundColor: Colors.deepPurpleAccent,
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => LoginScreen(),
+                            ),
+                          );
+                        },
+                        child: Text('Login'),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                            side: BorderSide(
+                              color: Colors.deepPurpleAccent,
+                              width: 2,
+                            ),
+                          ),
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.deepPurpleAccent,
+                        ),
+                        onPressed: () {},
+                        child: Text('Sign Up'),
+                      ),
                     ),
                   ],
                 ),

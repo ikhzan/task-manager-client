@@ -23,10 +23,10 @@ class IntroScreen extends StatelessWidget {
                 'Discover effective strategies for collaborating with your team, delegating tasks, and communicating clearly to achieve shared objectives.',
             image: Image(image: AssetImage('assets/intro/slide-2.png')),
           ),
-           PageViewModel(
+          PageViewModel(
             title: 'Evaluation',
             body:
-              'Understand how to assess your progress, review completed tasks, and reflect on your productivity to continuously improve your workflow.',
+                'Understand how to assess your progress, review completed tasks, and reflect on your productivity to continuously improve your workflow.',
             image: Image(image: AssetImage('assets/intro/slide-3.png')),
           ),
         ],
@@ -34,18 +34,19 @@ class IntroScreen extends StatelessWidget {
         showBackButton: true,
         showNextButton: true,
         back: Text('Back'),
-        done: TextButton(onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => PrepareScreen(),
-            ),
-          );
-        }, child: Text('Done')),
-        onDone: () {
-          
-        },
-        skip: IconButton(onPressed: (){}, icon: Icon(Icons.skip_next_rounded)),
+        done: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => PrepareScreen(),
+              ),
+            );
+          },
+          child: Text('Done'),
+        ),
+        onDone: () {},
+        skip: IconButton(onPressed: () {}, icon: Icon(Icons.skip_next_rounded)),
       ),
     );
   }

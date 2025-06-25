@@ -44,7 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       controller: _fullnameController,
       decoration: InputDecoration(
         labelText: "Fullname",
-        prefixIcon: Icon(Icons.details),
+        prefixIcon: Icon(Icons.text_fields),
         border: OutlineInputBorder(),
         filled: true,
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -55,14 +55,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _emailField(BuildContext context) {
     return TextField(
       controller: _emailController,
+      keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         labelText: "Email",
         prefixIcon: Icon(Icons.mail_outline_outlined),
         border: OutlineInputBorder(),
         filled: true,
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        errorText: _emailErrorText,
       ),
+      onChanged: (value) {
+        setState(() {
+          _emailErrorText = _validateEmail(value)
+              ? null
+              : "Invalid email format";
+        });
+      },
     );
+  }
+
+  String? _emailErrorText;
+
+  bool _validateEmail(String value) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(value);
   }
 
   Widget _usernameField(BuildContext context) {
@@ -79,16 +95,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _passwordField(BuildContext context) {
-    return TextField(
-      controller: _passwordController,
-      decoration: InputDecoration(
-        labelText: "Password",
-        prefixIcon: Icon(Icons.password),
-        border: OutlineInputBorder(),
-        filled: true,
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      ),
-      obscureText: true,
+    bool _obscureText = true;
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return TextField(
+          controller: _passwordController,
+          decoration: InputDecoration(
+            labelText: "Password",
+            prefixIcon: Icon(Icons.fingerprint),
+            border: OutlineInputBorder(),
+            filled: true,
+            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscureText ? Icons.visibility_off : Icons.visibility,
+              ),
+              onPressed: () {
+                setState(() {
+                  _obscureText = !_obscureText;
+                });
+              },
+            ),
+          ),
+          obscureText: _obscureText,
+        );
+      },
     );
   }
 
@@ -125,47 +157,64 @@ class _RegisterScreenState extends State<RegisterScreen> {
         title: Text(
           'Register',
           style: TextStyle(
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.bold,
             fontSize: 30,
-            color: Colors.deepPurpleAccent,
+            color: Colors.black,
           ),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-             SizedBox(height: 30),
-            _fullNameField(context),
-            SizedBox(height: 30),
-            _emailField(context),
-            SizedBox(height: 30),
-            _usernameField(context),
-            SizedBox(height: 30),
-            _passwordField(context),
-            SizedBox(height: 40),
-            _isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Please register with your email and username',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                SizedBox(height: 20),
+                _fullNameField(context),
+                SizedBox(height: 30),
+                _emailField(context),
+                SizedBox(height: 30),
+                _usernameField(context),
+                SizedBox(height: 30),
+                _passwordField(context),
+                SizedBox(height: 30),
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 24,
+                          ),
+                        ),
+                        onPressed: _handleRegister,
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Center(
+                              child: Text(
+                                "Create User",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 24,
-                      ),
-                    ),
-                    onPressed: _handleRegister,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                        child: Text("Create User", style: TextStyle(fontSize: 18)),
-                      ),
-                    ),
-                  ),
-          ],
+              ],
+            ),
+          ),
         ),
       ),
       bottomNavigationBar: _siginText(),
